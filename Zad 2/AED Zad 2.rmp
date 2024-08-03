@@ -1,0 +1,524 @@
+<?xml version="1.0" encoding="UTF-8"?><process version="10.4.000">
+  <context>
+    <input/>
+    <output/>
+    <macros/>
+  </context>
+  <operator activated="true" class="process" compatibility="10.4.000" expanded="true" name="Process">
+    <parameter key="logverbosity" value="init"/>
+    <parameter key="random_seed" value="2001"/>
+    <parameter key="send_mail" value="never"/>
+    <parameter key="notification_email" value=""/>
+    <parameter key="process_duration_for_mail" value="30"/>
+    <parameter key="encoding" value="SYSTEM"/>
+    <process expanded="true">
+      <operator activated="true" class="retrieve" compatibility="10.4.000" expanded="true" height="68" name="Retrieve" width="90" x="45" y="34">
+        <parameter key="repository_entry" value="//Local Repository/AED Zad2"/>
+      </operator>
+      <operator activated="true" class="blending:set_role" compatibility="10.4.000" expanded="true" height="82" name="Set Role (3)" width="90" x="45" y="187">
+        <list key="set_roles">
+          <parameter key="cnt" value="label"/>
+        </list>
+      </operator>
+      <operator activated="true" class="multiply" compatibility="10.4.000" expanded="true" height="229" name="Multiply" width="90" x="112" y="493"/>
+      <operator activated="true" class="date_to_numerical" compatibility="10.4.000" expanded="true" height="82" name="Date to Numerical (3)" width="90" x="380" y="952">
+        <parameter key="attribute_name" value="dteday"/>
+        <parameter key="time_unit" value="day"/>
+        <parameter key="millisecond_relative_to" value="second"/>
+        <parameter key="second_relative_to" value="minute"/>
+        <parameter key="minute_relative_to" value="hour"/>
+        <parameter key="hour_relative_to" value="day"/>
+        <parameter key="day_relative_to" value="year"/>
+        <parameter key="week_relative_to" value="year"/>
+        <parameter key="month_relative_to" value="year"/>
+        <parameter key="quarter_relative_to" value="year"/>
+        <parameter key="half_year_relative_to" value="year"/>
+        <parameter key="year_relative_to" value="era"/>
+        <parameter key="keep_old_attribute" value="false"/>
+      </operator>
+      <operator activated="true" class="date_to_numerical" compatibility="10.4.000" expanded="true" height="82" name="Date to Numerical (2)" width="90" x="380" y="697">
+        <parameter key="attribute_name" value="dteday"/>
+        <parameter key="time_unit" value="day"/>
+        <parameter key="millisecond_relative_to" value="second"/>
+        <parameter key="second_relative_to" value="minute"/>
+        <parameter key="minute_relative_to" value="hour"/>
+        <parameter key="hour_relative_to" value="day"/>
+        <parameter key="day_relative_to" value="year"/>
+        <parameter key="week_relative_to" value="year"/>
+        <parameter key="month_relative_to" value="year"/>
+        <parameter key="quarter_relative_to" value="year"/>
+        <parameter key="half_year_relative_to" value="year"/>
+        <parameter key="year_relative_to" value="era"/>
+        <parameter key="keep_old_attribute" value="false"/>
+      </operator>
+      <operator activated="true" class="date_to_numerical" compatibility="10.4.000" expanded="true" height="82" name="Date to Numerical" width="90" x="380" y="544">
+        <parameter key="attribute_name" value="dteday"/>
+        <parameter key="time_unit" value="day"/>
+        <parameter key="millisecond_relative_to" value="second"/>
+        <parameter key="second_relative_to" value="minute"/>
+        <parameter key="minute_relative_to" value="hour"/>
+        <parameter key="hour_relative_to" value="day"/>
+        <parameter key="day_relative_to" value="year"/>
+        <parameter key="week_relative_to" value="year"/>
+        <parameter key="month_relative_to" value="year"/>
+        <parameter key="quarter_relative_to" value="year"/>
+        <parameter key="half_year_relative_to" value="year"/>
+        <parameter key="year_relative_to" value="era"/>
+        <parameter key="keep_old_attribute" value="false"/>
+      </operator>
+      <operator activated="true" class="blending:split_data" compatibility="10.4.000" expanded="true" height="82" name="Split Data" width="90" x="514" y="1207">
+        <enumeration key="partitions">
+          <parameter key="ratio" value="0.7"/>
+          <parameter key="ratio" value="0.3"/>
+        </enumeration>
+        <parameter key="sampling_type" value="automatic"/>
+        <parameter key="use_local_random_seed" value="false"/>
+        <parameter key="local_random_seed" value="1992"/>
+      </operator>
+      <operator activated="true" class="additive_regression" compatibility="10.4.000" expanded="true" height="82" name="Additive Regression" width="90" x="782" y="1207">
+        <parameter key="iterations" value="10"/>
+        <parameter key="shrinkage" value="0.5"/>
+        <process expanded="true">
+          <operator activated="true" class="concurrency:parallel_decision_tree" compatibility="10.4.000" expanded="true" height="103" name="Decision Tree" width="90" x="514" y="34">
+            <parameter key="criterion" value="least_square"/>
+            <parameter key="maximal_depth" value="10"/>
+            <parameter key="apply_pruning" value="true"/>
+            <parameter key="confidence" value="0.1"/>
+            <parameter key="apply_prepruning" value="true"/>
+            <parameter key="minimal_gain" value="0.01"/>
+            <parameter key="minimal_leaf_size" value="2"/>
+            <parameter key="minimal_size_for_split" value="4"/>
+            <parameter key="number_of_prepruning_alternatives" value="3"/>
+          </operator>
+          <connect from_port="training set" to_op="Decision Tree" to_port="training set"/>
+          <connect from_op="Decision Tree" from_port="model" to_port="model"/>
+          <portSpacing port="source_training set" spacing="0"/>
+          <portSpacing port="sink_model" spacing="0"/>
+        </process>
+      </operator>
+      <operator activated="true" class="apply_model" compatibility="10.4.000" expanded="true" height="82" name="Additive" width="90" x="983" y="1207">
+        <list key="application_parameters"/>
+      </operator>
+      <operator activated="true" class="performance_regression" compatibility="10.4.000" expanded="true" height="82" name="Additive (2)" width="90" x="1184" y="1207">
+        <parameter key="main_criterion" value="root_mean_squared_error"/>
+        <parameter key="root_mean_squared_error" value="true"/>
+        <parameter key="absolute_error" value="false"/>
+        <parameter key="relative_error" value="true"/>
+        <parameter key="relative_error_lenient" value="false"/>
+        <parameter key="relative_error_strict" value="false"/>
+        <parameter key="normalized_absolute_error" value="false"/>
+        <parameter key="root_relative_squared_error" value="false"/>
+        <parameter key="squared_error" value="false"/>
+        <parameter key="correlation" value="false"/>
+        <parameter key="squared_correlation" value="false"/>
+        <parameter key="prediction_average" value="false"/>
+        <parameter key="spearman_rho" value="false"/>
+        <parameter key="kendall_tau" value="false"/>
+        <parameter key="skip_undefined_labels" value="true"/>
+        <parameter key="use_example_weights" value="true"/>
+      </operator>
+      <operator activated="true" class="blending:split_data" compatibility="10.4.000" expanded="true" height="103" name="Split Data (2)" width="90" x="380" y="85">
+        <enumeration key="partitions">
+          <parameter key="ratio" value="0.7"/>
+          <parameter key="ratio" value="0.3"/>
+        </enumeration>
+        <parameter key="sampling_type" value="automatic"/>
+        <parameter key="use_local_random_seed" value="false"/>
+        <parameter key="local_random_seed" value="1992"/>
+      </operator>
+      <operator activated="true" class="concurrency:parallel_decision_tree" compatibility="10.4.000" expanded="true" height="103" name="Decision Tree (3)" width="90" x="648" y="34">
+        <parameter key="criterion" value="least_square"/>
+        <parameter key="maximal_depth" value="50"/>
+        <parameter key="apply_pruning" value="true"/>
+        <parameter key="confidence" value="0.1"/>
+        <parameter key="apply_prepruning" value="true"/>
+        <parameter key="minimal_gain" value="0.01"/>
+        <parameter key="minimal_leaf_size" value="2"/>
+        <parameter key="minimal_size_for_split" value="4"/>
+        <parameter key="number_of_prepruning_alternatives" value="3"/>
+      </operator>
+      <operator activated="true" class="apply_model" compatibility="10.4.000" expanded="true" height="82" name="DT" width="90" x="983" y="85">
+        <list key="application_parameters"/>
+      </operator>
+      <operator activated="true" class="performance_regression" compatibility="10.4.000" expanded="true" height="82" name="DT (2)" width="90" x="1184" y="85">
+        <parameter key="main_criterion" value="first"/>
+        <parameter key="root_mean_squared_error" value="true"/>
+        <parameter key="absolute_error" value="false"/>
+        <parameter key="relative_error" value="true"/>
+        <parameter key="relative_error_lenient" value="false"/>
+        <parameter key="relative_error_strict" value="false"/>
+        <parameter key="normalized_absolute_error" value="false"/>
+        <parameter key="root_relative_squared_error" value="false"/>
+        <parameter key="squared_error" value="false"/>
+        <parameter key="correlation" value="false"/>
+        <parameter key="squared_correlation" value="false"/>
+        <parameter key="prediction_average" value="false"/>
+        <parameter key="spearman_rho" value="false"/>
+        <parameter key="kendall_tau" value="false"/>
+        <parameter key="skip_undefined_labels" value="true"/>
+        <parameter key="use_example_weights" value="true"/>
+      </operator>
+      <operator activated="true" class="weight_by_correlation" compatibility="10.4.000" expanded="true" height="82" name="Weight by Correlation" width="90" x="380" y="238">
+        <parameter key="normalize_weights" value="false"/>
+        <parameter key="sort_weights" value="true"/>
+        <parameter key="sort_direction" value="ascending"/>
+        <parameter key="squared_correlation" value="false"/>
+      </operator>
+      <operator activated="true" class="select_by_weights" compatibility="10.4.000" expanded="true" height="103" name="Select by Weights" width="90" x="581" y="238">
+        <parameter key="weight_relation" value="top k"/>
+        <parameter key="weight" value="0.1"/>
+        <parameter key="k" value="10"/>
+        <parameter key="p" value="0.5"/>
+        <parameter key="deselect_unknown" value="true"/>
+        <parameter key="use_absolute_weights" value="true"/>
+      </operator>
+      <operator activated="true" class="blending:split_data" compatibility="10.4.000" expanded="true" height="103" name="Split Data (5)" width="90" x="715" y="238">
+        <enumeration key="partitions">
+          <parameter key="ratio" value="0.7"/>
+          <parameter key="ratio" value="0.3"/>
+        </enumeration>
+        <parameter key="sampling_type" value="automatic"/>
+        <parameter key="use_local_random_seed" value="false"/>
+        <parameter key="local_random_seed" value="1992"/>
+      </operator>
+      <operator activated="true" class="concurrency:parallel_decision_tree" compatibility="10.4.000" expanded="true" height="103" name="Decision Tree (4)" width="90" x="916" y="187">
+        <parameter key="criterion" value="least_square"/>
+        <parameter key="maximal_depth" value="50"/>
+        <parameter key="apply_pruning" value="true"/>
+        <parameter key="confidence" value="0.1"/>
+        <parameter key="apply_prepruning" value="true"/>
+        <parameter key="minimal_gain" value="0.01"/>
+        <parameter key="minimal_leaf_size" value="2"/>
+        <parameter key="minimal_size_for_split" value="4"/>
+        <parameter key="number_of_prepruning_alternatives" value="3"/>
+      </operator>
+      <operator activated="true" class="apply_model" compatibility="10.4.000" expanded="true" height="82" name="Weights" width="90" x="1117" y="238">
+        <list key="application_parameters"/>
+      </operator>
+      <operator activated="true" class="performance_regression" compatibility="10.4.000" expanded="true" height="82" name="Weights (2)" width="90" x="1318" y="238">
+        <parameter key="main_criterion" value="first"/>
+        <parameter key="root_mean_squared_error" value="true"/>
+        <parameter key="absolute_error" value="false"/>
+        <parameter key="relative_error" value="true"/>
+        <parameter key="relative_error_lenient" value="false"/>
+        <parameter key="relative_error_strict" value="false"/>
+        <parameter key="normalized_absolute_error" value="false"/>
+        <parameter key="root_relative_squared_error" value="false"/>
+        <parameter key="squared_error" value="false"/>
+        <parameter key="correlation" value="false"/>
+        <parameter key="squared_correlation" value="false"/>
+        <parameter key="prediction_average" value="false"/>
+        <parameter key="spearman_rho" value="false"/>
+        <parameter key="kendall_tau" value="false"/>
+        <parameter key="skip_undefined_labels" value="true"/>
+        <parameter key="use_example_weights" value="true"/>
+      </operator>
+      <operator activated="true" class="remove_correlated_attributes" compatibility="10.4.000" expanded="true" height="82" name="Remove Correlated Attributes" width="90" x="447" y="391">
+        <parameter key="correlation" value="0.9"/>
+        <parameter key="filter_relation" value="greater"/>
+        <parameter key="attribute_order" value="original"/>
+        <parameter key="use_absolute_correlation" value="true"/>
+        <parameter key="use_local_random_seed" value="false"/>
+        <parameter key="local_random_seed" value="1992"/>
+      </operator>
+      <operator activated="true" class="blending:split_data" compatibility="10.4.000" expanded="true" height="103" name="Split Data (4)" width="90" x="648" y="391">
+        <enumeration key="partitions">
+          <parameter key="ratio" value="0.7"/>
+          <parameter key="ratio" value="0.3"/>
+        </enumeration>
+        <parameter key="sampling_type" value="automatic"/>
+        <parameter key="use_local_random_seed" value="false"/>
+        <parameter key="local_random_seed" value="1992"/>
+      </operator>
+      <operator activated="true" class="concurrency:parallel_decision_tree" compatibility="10.4.000" expanded="true" height="103" name="Decision Tree (5)" width="90" x="849" y="340">
+        <parameter key="criterion" value="least_square"/>
+        <parameter key="maximal_depth" value="50"/>
+        <parameter key="apply_pruning" value="true"/>
+        <parameter key="confidence" value="0.1"/>
+        <parameter key="apply_prepruning" value="true"/>
+        <parameter key="minimal_gain" value="0.01"/>
+        <parameter key="minimal_leaf_size" value="2"/>
+        <parameter key="minimal_size_for_split" value="4"/>
+        <parameter key="number_of_prepruning_alternatives" value="3"/>
+      </operator>
+      <operator activated="true" class="apply_model" compatibility="10.4.000" expanded="true" height="82" name="Remove Corr" width="90" x="1117" y="391">
+        <list key="application_parameters"/>
+      </operator>
+      <operator activated="true" class="performance_regression" compatibility="10.4.000" expanded="true" height="82" name="Remove Corr (2)" width="90" x="1318" y="391">
+        <parameter key="main_criterion" value="first"/>
+        <parameter key="root_mean_squared_error" value="true"/>
+        <parameter key="absolute_error" value="false"/>
+        <parameter key="relative_error" value="true"/>
+        <parameter key="relative_error_lenient" value="false"/>
+        <parameter key="relative_error_strict" value="false"/>
+        <parameter key="normalized_absolute_error" value="false"/>
+        <parameter key="root_relative_squared_error" value="false"/>
+        <parameter key="squared_error" value="false"/>
+        <parameter key="correlation" value="false"/>
+        <parameter key="squared_correlation" value="false"/>
+        <parameter key="prediction_average" value="false"/>
+        <parameter key="spearman_rho" value="false"/>
+        <parameter key="kendall_tau" value="false"/>
+        <parameter key="skip_undefined_labels" value="true"/>
+        <parameter key="use_example_weights" value="true"/>
+      </operator>
+      <operator activated="true" class="singular_value_decomposition" compatibility="10.4.000" expanded="true" height="103" name="SVD" width="90" x="581" y="697">
+        <parameter key="dimensionality_reduction" value="fixed number"/>
+        <parameter key="percentage_threshold" value="0.95"/>
+        <parameter key="dimensions" value="3"/>
+      </operator>
+      <operator activated="true" class="blending:split_data" compatibility="10.4.000" expanded="true" height="103" name="Split Data (6)" width="90" x="782" y="697">
+        <enumeration key="partitions">
+          <parameter key="ratio" value="0.7"/>
+          <parameter key="ratio" value="0.3"/>
+        </enumeration>
+        <parameter key="sampling_type" value="automatic"/>
+        <parameter key="use_local_random_seed" value="false"/>
+        <parameter key="local_random_seed" value="1992"/>
+      </operator>
+      <operator activated="true" class="concurrency:parallel_decision_tree" compatibility="10.4.000" expanded="true" height="103" name="Decision Tree (7)" width="90" x="983" y="646">
+        <parameter key="criterion" value="least_square"/>
+        <parameter key="maximal_depth" value="50"/>
+        <parameter key="apply_pruning" value="true"/>
+        <parameter key="confidence" value="0.1"/>
+        <parameter key="apply_prepruning" value="true"/>
+        <parameter key="minimal_gain" value="0.01"/>
+        <parameter key="minimal_leaf_size" value="2"/>
+        <parameter key="minimal_size_for_split" value="4"/>
+        <parameter key="number_of_prepruning_alternatives" value="3"/>
+      </operator>
+      <operator activated="true" class="apply_model" compatibility="10.4.000" expanded="true" height="82" name="SVD (2)" width="90" x="1184" y="697">
+        <list key="application_parameters"/>
+      </operator>
+      <operator activated="true" class="performance_regression" compatibility="10.4.000" expanded="true" height="82" name="SVD (3)" width="90" x="1385" y="697">
+        <parameter key="main_criterion" value="first"/>
+        <parameter key="root_mean_squared_error" value="true"/>
+        <parameter key="absolute_error" value="false"/>
+        <parameter key="relative_error" value="true"/>
+        <parameter key="relative_error_lenient" value="false"/>
+        <parameter key="relative_error_strict" value="false"/>
+        <parameter key="normalized_absolute_error" value="false"/>
+        <parameter key="root_relative_squared_error" value="false"/>
+        <parameter key="squared_error" value="false"/>
+        <parameter key="correlation" value="false"/>
+        <parameter key="squared_correlation" value="false"/>
+        <parameter key="prediction_average" value="false"/>
+        <parameter key="spearman_rho" value="false"/>
+        <parameter key="kendall_tau" value="false"/>
+        <parameter key="skip_undefined_labels" value="true"/>
+        <parameter key="use_example_weights" value="true"/>
+      </operator>
+      <operator activated="true" class="principal_component_analysis" compatibility="10.4.000" expanded="true" height="103" name="PCA" width="90" x="581" y="544">
+        <parameter key="dimensionality_reduction" value="keep variance"/>
+        <parameter key="variance_threshold" value="0.95"/>
+        <parameter key="number_of_components" value="1"/>
+      </operator>
+      <operator activated="true" class="blending:split_data" compatibility="10.4.000" expanded="true" height="103" name="Split Data (3)" width="90" x="715" y="544">
+        <enumeration key="partitions">
+          <parameter key="ratio" value="0.7"/>
+          <parameter key="ratio" value="0.3"/>
+        </enumeration>
+        <parameter key="sampling_type" value="automatic"/>
+        <parameter key="use_local_random_seed" value="false"/>
+        <parameter key="local_random_seed" value="1992"/>
+      </operator>
+      <operator activated="true" class="concurrency:parallel_decision_tree" compatibility="10.4.000" expanded="true" height="103" name="Decision Tree (6)" width="90" x="916" y="493">
+        <parameter key="criterion" value="least_square"/>
+        <parameter key="maximal_depth" value="50"/>
+        <parameter key="apply_pruning" value="true"/>
+        <parameter key="confidence" value="0.1"/>
+        <parameter key="apply_prepruning" value="true"/>
+        <parameter key="minimal_gain" value="0.01"/>
+        <parameter key="minimal_leaf_size" value="2"/>
+        <parameter key="minimal_size_for_split" value="4"/>
+        <parameter key="number_of_prepruning_alternatives" value="3"/>
+      </operator>
+      <operator activated="true" class="apply_model" compatibility="10.4.000" expanded="true" height="82" name="PCA (2)" width="90" x="1117" y="544">
+        <list key="application_parameters"/>
+      </operator>
+      <operator activated="true" class="performance_regression" compatibility="10.4.000" expanded="true" height="82" name="PCA (3)" width="90" x="1318" y="544">
+        <parameter key="main_criterion" value="first"/>
+        <parameter key="root_mean_squared_error" value="true"/>
+        <parameter key="absolute_error" value="false"/>
+        <parameter key="relative_error" value="true"/>
+        <parameter key="relative_error_lenient" value="false"/>
+        <parameter key="relative_error_strict" value="false"/>
+        <parameter key="normalized_absolute_error" value="false"/>
+        <parameter key="root_relative_squared_error" value="false"/>
+        <parameter key="squared_error" value="false"/>
+        <parameter key="correlation" value="false"/>
+        <parameter key="squared_correlation" value="false"/>
+        <parameter key="prediction_average" value="false"/>
+        <parameter key="spearman_rho" value="false"/>
+        <parameter key="kendall_tau" value="false"/>
+        <parameter key="skip_undefined_labels" value="true"/>
+        <parameter key="use_example_weights" value="true"/>
+      </operator>
+      <operator activated="true" class="blending:split_data" compatibility="10.4.000" expanded="true" height="103" name="Split Data (7)" width="90" x="581" y="850">
+        <enumeration key="partitions">
+          <parameter key="ratio" value="0.7"/>
+          <parameter key="ratio" value="0.3"/>
+        </enumeration>
+        <parameter key="sampling_type" value="automatic"/>
+        <parameter key="use_local_random_seed" value="false"/>
+        <parameter key="local_random_seed" value="1992"/>
+      </operator>
+      <operator activated="true" class="linear_regression" compatibility="10.4.000" expanded="true" height="103" name="Linear Regression" width="90" x="782" y="850">
+        <parameter key="feature_selection" value="M5 prime"/>
+        <parameter key="alpha" value="0.05"/>
+        <parameter key="max_iterations" value="10"/>
+        <parameter key="forward_alpha" value="0.05"/>
+        <parameter key="backward_alpha" value="0.05"/>
+        <parameter key="eliminate_colinear_features" value="true"/>
+        <parameter key="min_tolerance" value="0.26"/>
+        <parameter key="use_bias" value="true"/>
+        <parameter key="ridge" value="1.0E-8"/>
+      </operator>
+      <operator activated="true" class="apply_model" compatibility="10.4.000" expanded="true" height="82" name="Linear" width="90" x="1117" y="850">
+        <list key="application_parameters"/>
+      </operator>
+      <operator activated="true" class="performance_regression" compatibility="10.4.000" expanded="true" height="82" name="Linear (2)" width="90" x="1385" y="901">
+        <parameter key="main_criterion" value="first"/>
+        <parameter key="root_mean_squared_error" value="true"/>
+        <parameter key="absolute_error" value="false"/>
+        <parameter key="relative_error" value="true"/>
+        <parameter key="relative_error_lenient" value="false"/>
+        <parameter key="relative_error_strict" value="false"/>
+        <parameter key="normalized_absolute_error" value="false"/>
+        <parameter key="root_relative_squared_error" value="false"/>
+        <parameter key="squared_error" value="false"/>
+        <parameter key="correlation" value="false"/>
+        <parameter key="squared_correlation" value="false"/>
+        <parameter key="prediction_average" value="false"/>
+        <parameter key="spearman_rho" value="false"/>
+        <parameter key="kendall_tau" value="false"/>
+        <parameter key="skip_undefined_labels" value="true"/>
+        <parameter key="use_example_weights" value="true"/>
+      </operator>
+      <operator activated="true" class="blending:split_data" compatibility="10.4.000" expanded="true" height="103" name="Split Data (8)" width="90" x="514" y="1054">
+        <enumeration key="partitions">
+          <parameter key="ratio" value="0.7"/>
+          <parameter key="ratio" value="0.3"/>
+        </enumeration>
+        <parameter key="sampling_type" value="automatic"/>
+        <parameter key="use_local_random_seed" value="false"/>
+        <parameter key="local_random_seed" value="1992"/>
+      </operator>
+      <operator activated="true" class="polynomial_regression" compatibility="10.4.000" expanded="true" height="82" name="Polynomial Regression" width="90" x="782" y="1003">
+        <parameter key="max_iterations" value="5000"/>
+        <parameter key="replication_factor" value="1"/>
+        <parameter key="max_degree" value="1"/>
+        <parameter key="min_coefficient" value="-1.0"/>
+        <parameter key="max_coefficient" value="1.0"/>
+        <parameter key="use_local_random_seed" value="false"/>
+        <parameter key="local_random_seed" value="1992"/>
+      </operator>
+      <operator activated="true" class="apply_model" compatibility="10.4.000" expanded="true" height="82" name="Polynomial" width="90" x="1050" y="1054">
+        <list key="application_parameters"/>
+      </operator>
+      <operator activated="true" class="performance_regression" compatibility="10.4.000" expanded="true" height="82" name="Polynomial (2)" width="90" x="1251" y="1054">
+        <parameter key="main_criterion" value="first"/>
+        <parameter key="root_mean_squared_error" value="true"/>
+        <parameter key="absolute_error" value="false"/>
+        <parameter key="relative_error" value="true"/>
+        <parameter key="relative_error_lenient" value="false"/>
+        <parameter key="relative_error_strict" value="false"/>
+        <parameter key="normalized_absolute_error" value="false"/>
+        <parameter key="root_relative_squared_error" value="false"/>
+        <parameter key="squared_error" value="false"/>
+        <parameter key="correlation" value="false"/>
+        <parameter key="squared_correlation" value="false"/>
+        <parameter key="prediction_average" value="false"/>
+        <parameter key="spearman_rho" value="false"/>
+        <parameter key="kendall_tau" value="false"/>
+        <parameter key="skip_undefined_labels" value="true"/>
+        <parameter key="use_example_weights" value="true"/>
+      </operator>
+      <connect from_op="Retrieve" from_port="output" to_op="Set Role (3)" to_port="example set input"/>
+      <connect from_op="Set Role (3)" from_port="example set output" to_op="Multiply" to_port="input"/>
+      <connect from_op="Multiply" from_port="output 1" to_op="Split Data (2)" to_port="example set"/>
+      <connect from_op="Multiply" from_port="output 2" to_op="Weight by Correlation" to_port="example set"/>
+      <connect from_op="Multiply" from_port="output 3" to_op="Remove Correlated Attributes" to_port="example set input"/>
+      <connect from_op="Multiply" from_port="output 4" to_op="Date to Numerical" to_port="example set input"/>
+      <connect from_op="Multiply" from_port="output 5" to_op="Date to Numerical (2)" to_port="example set input"/>
+      <connect from_op="Multiply" from_port="output 6" to_op="Split Data" to_port="example set"/>
+      <connect from_op="Multiply" from_port="output 7" to_op="Split Data (7)" to_port="example set"/>
+      <connect from_op="Multiply" from_port="output 8" to_op="Date to Numerical (3)" to_port="example set input"/>
+      <connect from_op="Date to Numerical (3)" from_port="example set output" to_op="Split Data (8)" to_port="example set"/>
+      <connect from_op="Date to Numerical (2)" from_port="example set output" to_op="SVD" to_port="example set input"/>
+      <connect from_op="Date to Numerical" from_port="example set output" to_op="PCA" to_port="example set input"/>
+      <connect from_op="Split Data" from_port="partition 1" to_op="Additive Regression" to_port="training set"/>
+      <connect from_op="Additive Regression" from_port="model" to_op="Additive" to_port="model"/>
+      <connect from_op="Additive Regression" from_port="example set" to_op="Additive" to_port="unlabelled data"/>
+      <connect from_op="Additive" from_port="labelled data" to_op="Additive (2)" to_port="labelled data"/>
+      <connect from_op="Additive (2)" from_port="performance" to_port="result 15"/>
+      <connect from_op="Additive (2)" from_port="example set" to_port="result 16"/>
+      <connect from_op="Split Data (2)" from_port="partition 1" to_op="Decision Tree (3)" to_port="training set"/>
+      <connect from_op="Split Data (2)" from_port="partition 2" to_op="DT" to_port="unlabelled data"/>
+      <connect from_op="Decision Tree (3)" from_port="model" to_op="DT" to_port="model"/>
+      <connect from_op="DT" from_port="labelled data" to_op="DT (2)" to_port="labelled data"/>
+      <connect from_op="DT (2)" from_port="performance" to_port="result 1"/>
+      <connect from_op="DT (2)" from_port="example set" to_port="result 2"/>
+      <connect from_op="Weight by Correlation" from_port="weights" to_op="Select by Weights" to_port="weights"/>
+      <connect from_op="Weight by Correlation" from_port="example set" to_op="Select by Weights" to_port="example set input"/>
+      <connect from_op="Select by Weights" from_port="example set output" to_op="Split Data (5)" to_port="example set"/>
+      <connect from_op="Split Data (5)" from_port="partition 1" to_op="Decision Tree (4)" to_port="training set"/>
+      <connect from_op="Split Data (5)" from_port="partition 2" to_op="Weights" to_port="unlabelled data"/>
+      <connect from_op="Decision Tree (4)" from_port="model" to_op="Weights" to_port="model"/>
+      <connect from_op="Weights" from_port="labelled data" to_op="Weights (2)" to_port="labelled data"/>
+      <connect from_op="Weights (2)" from_port="performance" to_port="result 3"/>
+      <connect from_op="Weights (2)" from_port="example set" to_port="result 4"/>
+      <connect from_op="Remove Correlated Attributes" from_port="example set output" to_op="Split Data (4)" to_port="example set"/>
+      <connect from_op="Split Data (4)" from_port="partition 1" to_op="Decision Tree (5)" to_port="training set"/>
+      <connect from_op="Split Data (4)" from_port="partition 2" to_op="Remove Corr" to_port="unlabelled data"/>
+      <connect from_op="Decision Tree (5)" from_port="model" to_op="Remove Corr" to_port="model"/>
+      <connect from_op="Remove Corr" from_port="labelled data" to_op="Remove Corr (2)" to_port="labelled data"/>
+      <connect from_op="Remove Corr (2)" from_port="performance" to_port="result 5"/>
+      <connect from_op="Remove Corr (2)" from_port="example set" to_port="result 6"/>
+      <connect from_op="SVD" from_port="example set output" to_op="Split Data (6)" to_port="example set"/>
+      <connect from_op="Split Data (6)" from_port="partition 1" to_op="Decision Tree (7)" to_port="training set"/>
+      <connect from_op="Split Data (6)" from_port="partition 2" to_op="SVD (2)" to_port="unlabelled data"/>
+      <connect from_op="Decision Tree (7)" from_port="model" to_op="SVD (2)" to_port="model"/>
+      <connect from_op="SVD (2)" from_port="labelled data" to_op="SVD (3)" to_port="labelled data"/>
+      <connect from_op="SVD (3)" from_port="performance" to_port="result 9"/>
+      <connect from_op="SVD (3)" from_port="example set" to_port="result 10"/>
+      <connect from_op="PCA" from_port="example set output" to_op="Split Data (3)" to_port="example set"/>
+      <connect from_op="Split Data (3)" from_port="partition 1" to_op="Decision Tree (6)" to_port="training set"/>
+      <connect from_op="Split Data (3)" from_port="partition 2" to_op="PCA (2)" to_port="unlabelled data"/>
+      <connect from_op="Decision Tree (6)" from_port="model" to_op="PCA (2)" to_port="model"/>
+      <connect from_op="PCA (2)" from_port="labelled data" to_op="PCA (3)" to_port="labelled data"/>
+      <connect from_op="PCA (3)" from_port="performance" to_port="result 7"/>
+      <connect from_op="PCA (3)" from_port="example set" to_port="result 8"/>
+      <connect from_op="Split Data (7)" from_port="partition 1" to_op="Linear Regression" to_port="training set"/>
+      <connect from_op="Split Data (7)" from_port="partition 2" to_op="Linear" to_port="unlabelled data"/>
+      <connect from_op="Linear Regression" from_port="model" to_op="Linear" to_port="model"/>
+      <connect from_op="Linear" from_port="labelled data" to_op="Linear (2)" to_port="labelled data"/>
+      <connect from_op="Linear (2)" from_port="performance" to_port="result 11"/>
+      <connect from_op="Linear (2)" from_port="example set" to_port="result 12"/>
+      <connect from_op="Split Data (8)" from_port="partition 1" to_op="Polynomial Regression" to_port="training set"/>
+      <connect from_op="Split Data (8)" from_port="partition 2" to_op="Polynomial" to_port="unlabelled data"/>
+      <connect from_op="Polynomial Regression" from_port="model" to_op="Polynomial" to_port="model"/>
+      <connect from_op="Polynomial" from_port="labelled data" to_op="Polynomial (2)" to_port="labelled data"/>
+      <connect from_op="Polynomial (2)" from_port="performance" to_port="result 13"/>
+      <connect from_op="Polynomial (2)" from_port="example set" to_port="result 14"/>
+      <portSpacing port="source_input 1" spacing="0"/>
+      <portSpacing port="sink_result 1" spacing="0"/>
+      <portSpacing port="sink_result 2" spacing="0"/>
+      <portSpacing port="sink_result 3" spacing="0"/>
+      <portSpacing port="sink_result 4" spacing="0"/>
+      <portSpacing port="sink_result 5" spacing="0"/>
+      <portSpacing port="sink_result 6" spacing="0"/>
+      <portSpacing port="sink_result 7" spacing="0"/>
+      <portSpacing port="sink_result 8" spacing="0"/>
+      <portSpacing port="sink_result 9" spacing="0"/>
+      <portSpacing port="sink_result 10" spacing="0"/>
+      <portSpacing port="sink_result 11" spacing="0"/>
+      <portSpacing port="sink_result 12" spacing="0"/>
+      <portSpacing port="sink_result 13" spacing="0"/>
+      <portSpacing port="sink_result 14" spacing="0"/>
+      <portSpacing port="sink_result 15" spacing="0"/>
+      <portSpacing port="sink_result 16" spacing="0"/>
+      <portSpacing port="sink_result 17" spacing="0"/>
+    </process>
+  </operator>
+</process>
